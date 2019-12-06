@@ -9,12 +9,12 @@ function validateForm() {
 
     let fuelLevel = document.getElementById('fuelLevel');
     if (!isNaN(Number(fuelLevel))) {
-        alert('Set fuel Level to a Number');
+        alert('Make sure to enter valid information for each field');
         return;
     }
     let cargoMass = document.getElementById('cargoMass');
     if (!isNaN(Number(fuelLevel))) {
-        alert('Set cargoMass to a Number');
+        alert('Make sure to enter valid information for each field');
         return;
     }
 }
