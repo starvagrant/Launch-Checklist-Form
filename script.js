@@ -1,25 +1,26 @@
 function getFormFields() {
     // 0: pilot 1: co-pilot 2: fuel level 3: cargon mass
-    let fuelLevel = document.getElementById('fuelLevel').value;
-    let cargoMass = document.getElementById('cargoMass').value;
     let pilotName = document.getElementById('pilotName').value;
     let copilotName = document.getElementById('copilotName').value;
-    return [fuelLevel, cargoMass, pilotName, copilotName];
+    let fuelLevel = document.getElementById('fuelLevel').value;
+    let cargoMass = document.getElementById('cargoMass').value;
+    console.log([pilotName, copilotName, fuelLevel, cargoMass]);
+    return [pilotName, copilotName, fuelLevel, cargoMass];
 }
 
 function getValidity(formFields) {
     // 0: pilot 1: co-pilot 2: fuel level 3: cargon mass
     let invalidFields = ['','','',''];
-    if (isNaN(Number(formFields.fuelLevel))) invalidFields[2] = "Fuel must be a number";
-    if (isNaN(Number(formFields.cargoMass))) invalidFields[3] = "Fuel must be a number";
-    if (!isNaN(Number(formFields.fuelLevel))) invalidFields[2] = "Pilot name must be a string";
-    if (!isNaN(Number(formFields.cargoMass))) invalidFields[3] = "Co-Pilot name must be a string";
-    if (formFields.fuelLevel < 10000) invalidFields[2] = "Fuel must be over 10000";
-    if (formFields.cargo > 10000) invalidFields[3] = "Cargo must be under 10000";
-    if (formFields[0] === undefined) invalidFields[0] = "Fill in pilot name";
-    if (formFields[1] === undefined) invalidFields[1] = "Fill in cargo weight";
-    if (formFields[2] === undefined) invalidFields[2] = "Fill in fuel level";
-    if (formFields[3] === undefined) invalidFields[3] = "Fill in cargo weight";
+    if (!isNaN(Number(formFields[0]))) invalidFields[0] = "Fuel must be a string";
+    if (!isNaN(Number(formFields[1]))) invalidFields[1] = "Cargo must be a string";
+    if (isNaN(Number(formFields[2]))) invalidFields[2] = "Fuel must be a number";
+    if (isNaN(Number(formFields[3]))) invalidFields[3] = "Cargo must be a number";
+    if (formFields[2] < 10000) invalidFields[2] = "Fuel must be over 10000";
+    if (formFields[3] > 10000) invalidFields[3] = "Cargo must be under 10000";
+    if (formFields[0] === "") invalidFields[0] = "Fill in blank field";
+    if (formFields[1] === "") invalidFields[1] = "Fill in blank field";
+    if (formFields[2] === "") invalidFields[2] = "Fill in blank field";
+    if (formFields[3] === "") invalidFields[3] = "Fill in blank field";
     return invalidFields;
 }
 
@@ -49,20 +50,22 @@ window.addEventListener("load", function() {
     let form = document.querySelector('form');
     form.addEventListener("submit", function(event) {
         event.preventDefault();
+        alert('submitted');
         let formFields = getFormFields();
         let validity = getValidity(formFields);
         let formIsValid = true;
-
         let faultyItems = document.getElementById("faultyItems");
-        let listItems = document.getElementsByTagName('li');
+        let listItems = document.getElementsByClassName('shuttleStatus');
         let launchStatus = document.getElementById("launchStatus");
+        let correctStatus = ["Pilot Ready","Co-pilot Ready","Fuel level high enough for launch","Cargo mass low enough for launch"];
 
         faultyItems.style.visibility = "visible";
-
         for (i=0; i<validity.length; i++) {
             if (validity[i] !== '') {
-                listItems.innerHTML = validity;
+                document.getElementsByClassName('shuttleStatus')[i].innerHTML = validity[i];
                 formIsValid = false;
+            } else {
+                document.getElementsByClassName('shuttleStatus')[i].innerHTML = correctStatus[i];
             }
         }
 
@@ -74,7 +77,3 @@ window.addEventListener("load", function() {
     });
 
 });
-
-/* This block of code shows how to format the HTML once you fetch some planetary JSON!
-
-*/
