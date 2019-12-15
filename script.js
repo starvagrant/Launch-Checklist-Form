@@ -15,8 +15,6 @@ function getValidity(formFields) {
     if (!isNaN(Number(formFields[1]))) invalidFields[1] = "Cargo must be a string";
     if (isNaN(Number(formFields[2]))) invalidFields[2] = "Fuel must be a number";
     if (isNaN(Number(formFields[3]))) invalidFields[3] = "Cargo must be a number";
-    if (formFields[2] < 10000) invalidFields[2] = "Fuel must be over 10000";
-    if (formFields[3] > 10000) invalidFields[3] = "Cargo must be under 10000";
     if (formFields[0] === "") invalidFields[0] = "Fill in blank field";
     if (formFields[1] === "") invalidFields[1] = "Fill in blank field";
     if (formFields[2] === "") invalidFields[2] = "Fill in blank field";
@@ -26,6 +24,10 @@ function getValidity(formFields) {
 
 function toggleVisibility(element) {
     element.style.visibility = "visible";
+}
+
+function isNotEmptyString(argument) {
+    return (argument !== "");
 }
 
 window.addEventListener("load", function() {
@@ -53,27 +55,48 @@ window.addEventListener("load", function() {
         alert('submitted');
         let formFields = getFormFields();
         let validity = getValidity(formFields);
-        let formIsValid = true;
-        let faultyItems = document.getElementById("faultyItems");
-        let listItems = document.getElementsByClassName('shuttleStatus');
+        if (validity.includes('Fill in blank field')) {
+            alert('All fields are required');
+            return;
+        }
+        if (validity.filter(isNotEmptyString).length > 0){
+            alert('Make sure to enter valid information for each field!');
+            return;
+        }
+
         let launchStatus = document.getElementById("launchStatus");
         let correctStatus = ["Pilot Ready","Co-pilot Ready","Fuel level high enough for launch","Cargo mass low enough for launch"];
 
-        faultyItems.style.visibility = "visible";
-        for (i=0; i<validity.length; i++) {
-            if (validity[i] !== '') {
-                document.getElementsByClassName('shuttleStatus')[i].innerHTML = validity[i];
-                formIsValid = false;
-            } else {
-                document.getElementsByClassName('shuttleStatus')[i].innerHTML = correctStatus[i];
-            }
+        shuttleReady = true;
+
+        document.getElementsByClassNAme('shuttleStatus')[0].innerHTML = document.getElementById('pilotName').value + " ready";
+        document.getElementsByClassName('shuttleStatus')[1].innerHTML = document.getElementById('copilotName').value + " ready";
+
+        let fuelLevel = document.getElementById('fuelLevel').value;
+        let cargoMass = document.getElementById('cargoMass').value;
+
+        if (fuelLevel <= 10000) {
+            document.getElementsByClassName('shuttleStatus')[2].innerHTML = "Fuel level too low for launch";
+            shuttleReady = false;
+        } else {
+            document.getElementsByClassName('shuttleStatus')[2].innerHTML = "Fuel level high enough for launch";
         }
 
-        if (!formIsValid) {
+        if (cargoMass > 10000) {
+            document.getElementsByClassName('shuttleStatus')[3].innerHTML = "Cargo Mass too high for launch";
+            shuttleReady = false;
+        } else {
+            document.getElementsByClassName('shuttleStatus')[3].innerHTML = "Cargo Mass low enough for launch";
+        }
+
+        if (!shuttleReady) {
             launchStatus.innerHTML = "Shuttle not ready for launch";
+            launchStatus.style.color = "red";
         } else {
             launchStatus.innerHTML = "Shuttle ready for launch";
+            launchStatus.style.color = "black";
         }
-    });
 
+        faultyItems.style.visibility = "visible";
+    });
 });
