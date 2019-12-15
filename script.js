@@ -1,63 +1,30 @@
-function validateForm() {
-    let form = document.querySelector('form');
-    for(i=0; i<4;i++) {
-        if (form[i].value === "") {
-            alert('Fill in All Fields');
-            return;
-        }
-    }
-
-    let fuelLevel = document.getElementById('fuelLevel');
-    if (!isNaN(Number(fuelLevel))) {
-        alert('Make sure to enter valid information for each field');
-        return;
-    }
-    let cargoMass = document.getElementById('cargoMass');
-    if (!isNaN(Number(fuelLevel))) {
-        alert('Make sure to enter valid information for each field');
-        return;
-    }
-}
-
-function insertNames() {
-    let pilotName = document.getElementById('pilotName').value;
-    let copilotName = document.getElementById('copilotName').value;
-    let pilotStatus = document.getElementById('pilotStatus');
-    let copilotStatus = document.getElementById('copilotStatus');
-    pilotStatus.innerHTML = `${pilotName}`;
-    copilotStatus.innerHTML = `${copilotName}`;
-}
-
-function alertShuttleNeeds() {
+function getFormFields() {
+    // 0: pilot 1: co-pilot 2: fuel level 3: cargon mass
     let fuelLevel = document.getElementById('fuelLevel').value;
     let cargoMass = document.getElementById('cargoMass').value;
-    let fuelGood = true;
-    let cargoGood = true;
-    if (fuelLevel <= 10000) fuelGood = false;
-    if (cargoMass >= 10000) cargoGood = false;
-    let faultyItems = document.getElementById("faultyItems");
-    let launchStatus = document.getElementById("launchStatus");
-    if (!fuelGood || !cargoGood) {
-        faultyItems.style.visibility = "visible";
-        launchStatus.style.color = "red";
-        launchStatus.innerHTML = "Shuttle not ready for launch";
-        let fuelStatus = document.getElementById('fuelStatus');
-        let cargoStatus = document.getElementById('cargoStatus');
-        if (!fuelGood) {
-            fuelStatus.innerHTML = "There is not enough fuel for the journey";
-        } else {
-            fuelStatus.innerHTML = "Fuel level high enough for launch";
-        }
-        if (!cargoGood) {
-            cargoStatus.innerHTML = "There is too much mass for takeoff.";
-        } else {
-            cargoStatus.innerHTML = "Cargo mass low enough for launch";
-        }
-    } else {
-        faultyItems.style.visibility = "hidden";
-        launchStatus.style.color = "";
-        launchStatus.innerHTML = "Awaiting Information Before Launch";
-    }
+    let pilotName = document.getElementById('pilotName').value;
+    let copilotName = document.getElementById('copilotName').value;
+    return [fuelLevel, cargoMass, pilotName, copilotName];
+}
+
+function getValidity(formFields) {
+    // 0: pilot 1: co-pilot 2: fuel level 3: cargon mass
+    let invalidFields = ['','','',''];
+    if (isNaN(Number(formFields.fuelLevel))) invalidFields[2] = "Fuel must be a number";
+    if (isNaN(Number(formFields.cargoMass))) invalidFields[3] = "Fuel must be a number";
+    if (!isNaN(Number(formFields.fuelLevel))) invalidFields[2] = "Pilot name must be a string";
+    if (!isNaN(Number(formFields.cargoMass))) invalidFields[3] = "Co-Pilot name must be a string";
+    if (formFields.fuelLevel < 10000) invalidFields[2] = "Fuel must be over 10000";
+    if (formFields.cargo > 10000) invalidFields[3] = "Cargo must be under 10000";
+    if (formFields[0] === undefined) invalidFields[0] = "Fill in pilot name";
+    if (formFields[1] === undefined) invalidFields[1] = "Fill in cargo weight";
+    if (formFields[2] === undefined) invalidFields[2] = "Fill in fuel level";
+    if (formFields[3] === undefined) invalidFields[3] = "Fill in cargo weight";
+    return invalidFields;
+}
+
+function toggleVisibility(element) {
+    element.style.visibility = "visible";
 }
 
 window.addEventListener("load", function() {
@@ -82,10 +49,28 @@ window.addEventListener("load", function() {
     let form = document.querySelector('form');
     form.addEventListener("submit", function(event) {
         event.preventDefault();
-        validateForm();
-        insertNames();
-        alertShuttleNeeds();
-        console.log('program complete!');
+        let formFields = getFormFields();
+        let validity = getValidity(formFields);
+        let formIsValid = true;
+
+        let faultyItems = document.getElementById("faultyItems");
+        let listItems = document.getElementsByTagName('li');
+        let launchStatus = document.getElementById("launchStatus");
+
+        faultyItems.style.visibility = "visible";
+
+        for (i=0; i<validity.length; i++) {
+            if (validity[i] !== '') {
+                listItems.innerHTML = validity;
+                formIsValid = false;
+            }
+        }
+
+        if (!formIsValid) {
+            launchStatus.innerHTML = "Shuttle not ready for launch";
+        } else {
+            launchStatus.innerHTML = "Shuttle ready for launch";
+        }
     });
 
 });
