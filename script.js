@@ -4,7 +4,6 @@ function getFormFields() {
     let copilotName = document.getElementById('copilotName').value;
     let fuelLevel = document.getElementById('fuelLevel').value;
     let cargoMass = document.getElementById('cargoMass').value;
-    console.log([pilotName, copilotName, fuelLevel, cargoMass]);
     return [pilotName, copilotName, fuelLevel, cargoMass];
 }
 
@@ -52,7 +51,6 @@ window.addEventListener("load", function() {
     let form = document.querySelector('form');
     form.addEventListener("submit", function(event) {
         event.preventDefault();
-        alert('submitted');
         let formFields = getFormFields();
         let validity = getValidity(formFields);
         if (validity.includes('Fill in blank field')) {
