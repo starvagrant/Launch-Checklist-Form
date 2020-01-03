@@ -67,7 +67,7 @@ window.addEventListener("load", function() {
 
         shuttleReady = true;
 
-        document.getElementsByClassNAme('shuttleStatus')[0].innerHTML = document.getElementById('pilotName').value + " ready";
+        document.getElementsByClassName('shuttleStatus')[0].innerHTML = document.getElementById('pilotName').value + " ready";
         document.getElementsByClassName('shuttleStatus')[1].innerHTML = document.getElementById('copilotName').value + " ready";
 
         let fuelLevel = document.getElementById('fuelLevel').value;
