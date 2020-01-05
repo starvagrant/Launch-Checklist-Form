@@ -92,7 +92,7 @@ window.addEventListener("load", function() {
             launchStatus.style.color = "red";
         } else {
             launchStatus.innerHTML = "Shuttle ready for launch";
-            launchStatus.style.color = "black";
+            launchStatus.style.color = "green";
         }
 
         faultyItems.style.visibility = "visible";
